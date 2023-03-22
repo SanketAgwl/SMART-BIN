@@ -1,14 +1,18 @@
 #!/usr/bin/python
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import time
-from twilio.rest import Client
-def sendSMS(msg):
-    account_sid = "AC837856c18f1469554bb919bd638540dc"
-    auth_token = "2bb74470d36e9ea1f51047ccbb4ddfeb"
-    client = Client(account_sid, auth_token)
-    client.api.account.messages.create(to="+917619411837",from_="+12058329946",body=msg)
-    print("SMS sent !")
+import firebase_admin
+from firebase_admin import credentials, db
 
+length= 100
+
+cred = credentials.Certificate("service.json")
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://waste-management-74338-default-rtdb.asia-southeast1.firebasedatabase.app/'
+})
+
+ref = db.reference('/Bin')
+ref.set({'id': '1', 'status': 'on', 'level': '0'})
 
 try:
       GPIO.setmode(GPIO.BOARD)
@@ -42,8 +46,8 @@ try:
       pulse_duration = pulse_end_time - pulse_start_time
       distance = round(pulse_duration * 17150, 2)
       print ("Distance:",distance,"cm")
-      if(distance < 10):
-          sendSMS("Trash is full. Plis run systemCls()")
+      level = (length - distance) * 100 / length
+      ref.update({'id': '1', 'status': 'on', 'level': level})
 
 finally:
       GPIO.cleanup()
