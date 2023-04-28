@@ -17,8 +17,8 @@ ref.set({'id': '1', 'status': 'on', 'level': '0'})
 try:
       GPIO.setmode(GPIO.BOARD)
 
-      PIN_TRIGGER = 13
-      PIN_ECHO = 15
+      PIN_TRIGGER = 18
+      PIN_ECHO = 24
 
       GPIO.setup(PIN_TRIGGER, GPIO.OUT)
       GPIO.setup(PIN_ECHO, GPIO.IN)
